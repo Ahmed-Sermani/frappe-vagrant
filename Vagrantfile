@@ -51,21 +51,7 @@ Vagrant.configure("2") do |config|
 
   config.ssh.forward_agent = true
 
-  # Windows specific synced_folder settings
-  if Vagrant::Util::Platform.windows? then
-    if Vagrant.has_plugin?("vagrant-fsnotify") then
-      # uses fsnotify to simulate file events on guest from windows
-      config.vm.synced_folder "./", "/vagrant", fsnotify: [:modified, :removed], exclude: ["*.pyc", "*.pyd", "*.pyo", ".git/*"]
-      # On windows, we auto start fsnotify.
-      config.trigger.after :up, :reload do |t|
-        t.name = "FSNotify"
-	t.info = "Starts the fsnotify watcher plugin"
-        t.run = { inline: "vagrant fsnotify" }
-      end
-    end
-  else
-    config.vm.synced_folder "./", "/vagrant"
-  end
+  config.vm.synced_folder "./frappe_synced", "/home/vagrant/frappe_synced"
 
   
   config.vm.provider "virtualbox" do |vb|
